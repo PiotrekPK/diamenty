@@ -85,7 +85,7 @@ body {
   margin-right: 20px;
   border: 0;
   font-size: 20px;
-  background-image: url("/images/levelicon.png");
+  background-image: url("./images/levelicon.png");
   background-size: cover;
   background-color: transparent;
   cursor: pointer;
