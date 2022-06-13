@@ -328,6 +328,14 @@ class Game extends Common {
         ) {
           return true;
         }
+        if (
+          index % DIAMOND_ARRAY_WIDTH &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) < DIAMONDS_ARRAY_HEIGHT - 2 &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH - 1].kind &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH * 2 - 1].kind
+        ) {
+          return true;
+        }
 
         return false;
       });
