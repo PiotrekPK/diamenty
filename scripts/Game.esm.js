@@ -14,8 +14,8 @@ import { GameState } from "./GameState.esm.js";
 import { mouseControler } from "./MouseController.ems.js";
 import { resultScreen } from "./ResultScreen.esm.js";
 import { userData } from "./UserData.esm.js";
-const DIAMOND_ARRAY_WIDTH = 8;
-const DIAMONDS_ARRAY_HEIGHT = DIAMOND_ARRAY_WIDTH + 1;
+export const DIAMOND_ARRAY_WIDTH = 8;
+export const DIAMONDS_ARRAY_HEIGHT = DIAMOND_ARRAY_WIDTH + 1;
 const LAST_ELEMENT_DIAMONDS_ARRAY =
   DIAMOND_ARRAY_WIDTH * DIAMONDS_ARRAY_HEIGHT - 1;
 
@@ -36,8 +36,8 @@ class Game extends Common {
       media.diamondsSprite
     );
     this.changeVisibilityScreen(canvas.element, VISIBLE_SCREEN);
-    this.diamond = new Diamond(50, 50, 1, 1, 2, media.diamondsSprite);
-
+    media.isInLevel = true;
+    media.playBackgroundMusic();
     this.animate();
   }
   animate() {
@@ -273,7 +273,7 @@ class Game extends Common {
         }
         // move right => check in row
         if (
-          index % DIAMOND_ARRAY_WIDTH < DIAMONDS_ARRAY_WIDTH - 3 &&
+          index % DIAMOND_ARRAY_WIDTH < DIAMOND_ARRAY_WIDTH - 3 &&
           diamond.kind === diamonds[index + 2].kind &&
           diamond.kind === diamonds[index + 3].kind
         ) {
@@ -284,8 +284,8 @@ class Game extends Common {
           index % DIAMOND_ARRAY_WIDTH < DIAMOND_ARRAY_WIDTH - 1 &&
           Math.floor(index / DIAMOND_ARRAY_WIDTH) > 1 &&
           Math.floor(index / DIAMOND_ARRAY_WIDTH) < DIAMONDS_ARRAY_HEIGHT - 1 &&
-          diamond.kind === diamond[index - DIAMOND_ARRAY_WIDTH + 1].kind &&
-          diamond.kind === diamond[index - DIAMOND_ARRAY_WIDTH + 1].kind
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH + 1].kind &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH + 1].kind
         ) {
           return true;
         }
@@ -336,9 +336,87 @@ class Game extends Common {
         ) {
           return true;
         }
+        if (
+          index % DIAMOND_ARRAY_WIDTH &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) > 2 &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH - 1].kind &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH * 2 - 1].kind
+        ) {
+          return true;
+        }
+        if (
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) < DIAMONDS_ARRAY_HEIGHT - 3 &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH * 2].kind &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH * 3].kind
+        ) {
+          return true;
+        }
+        if (
+          index % DIAMOND_ARRAY_WIDTH &&
+          index % DIAMOND_ARRAY_WIDTH < DIAMOND_ARRAY_WIDTH - 1 &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) < DIAMONDS_ARRAY_HEIGHT - 1 &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH + 1].kind &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH - 1].kind
+        ) {
+          return true;
+        }
+        if (
+          index % DIAMOND_ARRAY_WIDTH < DIAMOND_ARRAY_WIDTH - 2 &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) < DIAMONDS_ARRAY_HEIGHT - 1 &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH + 1].kind &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH + 2].kind
+        ) {
+          return true;
+        }
+        if (
+          index % DIAMOND_ARRAY_WIDTH > 1 &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) < DIAMONDS_ARRAY_HEIGHT - 1 &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH - 1].kind &&
+          diamond.kind === diamonds[index + DIAMOND_ARRAY_WIDTH - 2].kind
+        ) {
+          return true;
+        }
 
+        if (
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) > 3 &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH * 2].kind &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH * 3].kind
+        ) {
+          return true;
+        }
+
+        if (
+          index % DIAMOND_ARRAY_WIDTH &&
+          index % DIAMOND_ARRAY_WIDTH < DIAMOND_ARRAY_WIDTH - 1 &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) > 1 &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH + 1].kind &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH - 1].kind
+        ) {
+          return true;
+        }
+        if (
+          index % DIAMOND_ARRAY_WIDTH < DIAMOND_ARRAY_WIDTH - 2 &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) > 1 &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH + 1].kind &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH + 2].kind
+        ) {
+          return true;
+        }
+
+        if (
+          index % DIAMOND_ARRAY_WIDTH > 1 &&
+          Math.floor(index / DIAMOND_ARRAY_WIDTH) > 1 &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH - 1].kind &&
+          diamond.kind === diamonds[index - DIAMOND_ARRAY_WIDTH - 2].kind
+        ) {
+          return true;
+        }
         return false;
       });
+
+    if (!this.isPosibleToMove) {
+      this.gameState.mixDiamonds();
+    }
   }
   checkEndGame() {
     if (
